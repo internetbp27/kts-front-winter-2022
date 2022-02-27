@@ -1,87 +1,56 @@
 import React from "react";
 
-import "./ReposSearchPage.css";
 import Button from "@components/Button";
 import Input from "@components/Input";
-import RepoBranchesDrawer from "@components/RepoBranchesDrawer";
 import RepoTile from "@components/RepoTile";
 import SearchIcon from "@components/SearchIcon";
-import GitHubStore from "@store/GitHubStore";
-import { RepoItem } from "@store/GitHubStore/types";
+
+import { useReposContext } from "../../App";
+import styles from "./ReposSearchPage.module.scss";
 
 const ReposSearchPage: React.FC = () => {
     const [currentInputValue, setInputValue] = React.useState<string>('');
+    const reposContext = useReposContext();
 
     const handleOnChange = (event): void => {
         const { value } = event.target;
         setInputValue(value);
     };
 
-    const [isLoading, setIsLoading] = React.useState<boolean>(false);
-    const [repoList, setRepoList] = React.useState<null | RepoItem[]>(null);
-
-
-    const gitHubStore = new GitHubStore();
-
     const handleOnButtonClick = (event: React.MouseEvent): void => {
         event.preventDefault();
-
-        if (currentInputValue.length > 0) {
-            setIsLoading(true);
-            gitHubStore.getOrganizationReposList({
-                org: currentInputValue,
-                query: {
-                    per_page: 5
-                }
-            }).then(result => {
-                setRepoList(result.data);
-                setIsLoading(false);
-            })
-        }
-        else {
-            setRepoList(null);
-        }
+        reposContext.load(currentInputValue);
     }
 
     //React.useEffect(() => { }, []);
-    const [isVisibleDrawer, setIsVisibleDrawer] = React.useState<boolean>(false);
-    const [selectedRepo, setSelectedRepo] = React.useState<null | RepoItem>(null);
+    //const [isVisibleDrawer, setIsVisibleDrawer] = React.useState<boolean>(false);
+    //const [selectedRepo, setSelectedRepo] = React.useState<null | RepoItem>(null);
 
-    const handleOnItemClick = (repoIndex: number): void => {
-        if (repoList) {
-            setSelectedRepo(repoList[repoIndex] || null);
+    /*const handleOnItemClick = (repoIndex: number): void => {
+        if (reposContext.list) {
+            setSelectedRepo(reposContext.list[repoIndex] || null);
             setIsVisibleDrawer(true);
         }
+    };*/
 
-        /*gitHubStore.getBranchesReposList({
-            owner: string,
-            repo:            
-        }).then(result => {
-                setRepoList(result.data);
-                setIsLoading(false);
-            })*/
-    };
-
-    const handleOnCloseDrawer = () => {
+    /*const handleOnCloseDrawer = () => {
         setIsVisibleDrawer(false);
         setSelectedRepo(null);
-    }
+    }*/
 
     return <div>
-        <RepoBranchesDrawer isVisible={isVisibleDrawer} selectedRepo={selectedRepo} onClose={handleOnCloseDrawer} />
-        <form className="search-form">
-            <div className="search-form__content">
-                <Input className="search-form__input" name="search" placeholder="Введите название организации" value={currentInputValue} onChange={handleOnChange} />
-                <Button className="search-form__button" onClick={handleOnButtonClick} disabled={isLoading} >
+        <form className={styles.search_form}>
+            <div className={styles.search_form__content}>
+                <Input className={styles.search_form__input} name="search" placeholder="Введите название организации" value={currentInputValue} onChange={handleOnChange} />
+                <Button className={styles.search_form__button} onClick={handleOnButtonClick} disabled={reposContext.isLoading} >
                     <SearchIcon currentColor="white" />
                 </Button>
             </div>
         </form>
-        <div className="list">
-
-            {(repoList && repoList.length > 0) ?
-                repoList?.map((repo, index) => (
-                    <RepoTile key={repo.id} item={repo} onClick={() => handleOnItemClick(index)} />
+        <div className={styles.list}>
+            {(reposContext.list && reposContext.list.length > 0) ?
+                reposContext.list?.map((repo, index) => (
+                    <RepoTile key={repo.id} item={repo} />
                 ))
                 : <p>Ничего не найдено</p>
             }

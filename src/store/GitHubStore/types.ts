@@ -28,6 +28,10 @@ export type GetBranchesReposListParams = {
     }
 }
 
+export type GetReposByIdParams = {
+    id: number
+}
+
 export type ApiResp<RepoItem> = {
     status: boolean;
     data: RepoItem;
@@ -47,6 +51,17 @@ export type BranchItem = {
     id: number,
     name: string,
     url: string
+}
+
+export type RepoFullItem = {
+    id: number;
+    name: string;
+    updated_at: string;
+    org_url: string;
+    org_name: string;
+    stars_count: number;
+    avatar_url: string;
+    description?: string;
 }
 
 

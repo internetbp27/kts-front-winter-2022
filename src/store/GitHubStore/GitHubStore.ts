@@ -1,6 +1,6 @@
 import ApiStore from '../../shared/store/ApiStore';
 import { HTTPMethod } from '../../shared/store/ApiStore/types';
-import { IGitHubStore, GetOrganizationReposListParams, GetBranchesReposListParams, ApiResp, RepoItem, BranchItem } from "./types";
+import { IGitHubStore, GetOrganizationReposListParams, GetBranchesReposListParams, GetReposByIdParams, ApiResp, RepoItem, RepoFullItem, BranchItem } from "./types";
 
 export default class GitHubStore implements IGitHubStore {
     private readonly apiStore = new ApiStore('https://api.github.com'); // TODO: не забудьте передать baseUrl в конструктор
@@ -89,6 +89,51 @@ export default class GitHubStore implements IGitHubStore {
             return {
                 status: false,
                 data: []
+            }
+        }
+    }
+
+    async getRepoById(params: GetReposByIdParams): Promise<ApiResp<RepoItem | null>> {
+        try {
+            const data = await this.apiStore.request(
+                {
+                    method: HTTPMethod.GET,
+                    endpoint: `/repositories/${params.id}`,
+                    headers: {
+                        "Accept": "application/vnd.github.v3+json"
+                    },
+                    data: []
+                }
+            );
+
+
+            if (data.data) {
+                let res: RepoFullItem = {
+                    id: data.data.id,
+                    name: data.data.name,
+                    updated_at: data.data.updated_at,
+                    org_url: data.data.owner.html_url,
+                    org_name: data.data.owner.login,
+                    stars_count: data.data.stargazers_count,
+                    avatar_url: data.data.owner.avatar_url,
+                    description: data.data.description
+                }
+
+                return {
+                    status: true,
+                    data: res
+                };
+            }
+            else
+                return {
+                    status: true,
+                    data: null
+                };
+        }
+        catch (error) {
+            return {
+                status: false,
+                data: null
             }
         }
     }

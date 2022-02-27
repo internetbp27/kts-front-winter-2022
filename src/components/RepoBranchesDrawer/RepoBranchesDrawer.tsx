@@ -15,9 +15,9 @@ export type RepoBranchesDrawerProps = {
 const RepoBranchesDrawer: React.FC<RepoBranchesDrawerProps> = ({ isVisible, selectedRepo, onClose }) => {
     const [repoBranches, setRepoBranches] = React.useState<null | BranchItem[]>(null);
 
-    const gitHubStore = new GitHubStore();
     useEffect(() => {
         if (selectedRepo) {
+            const gitHubStore = new GitHubStore();
             gitHubStore.getBranchesReposList({
                 owner: selectedRepo?.org_name || '',
                 repo: selectedRepo?.name || ''

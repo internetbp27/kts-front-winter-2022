@@ -1,6 +1,6 @@
 import React from "react";
 
-import "./Avatar.css";
+import styles from "./Avatar.module.scss";
 
 export type AvatarProps = {
     src?: any,
@@ -9,7 +9,7 @@ export type AvatarProps = {
 };
 
 const Avatar: React.FC<AvatarProps> = ({ src, alt, letter }) => {
-    return <div className="item__avatar">
+    return <div className={styles.item__avatar}>
         {src ? <img src={src} alt={alt} /> : letter}
     </div>;
 }
