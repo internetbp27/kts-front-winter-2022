@@ -1,6 +1,7 @@
-import {ApiResponse, IApiStore, RequestParams, StatusHTTP} from "./types";
-import qs from 'qs';
 import fetch from 'cross-fetch';
+import qs from 'qs';
+
+import { ApiResponse, IApiStore, RequestParams, StatusHTTP } from "./types";
 
 export default class ApiStore implements IApiStore {
     readonly baseUrl: string;
@@ -12,18 +13,18 @@ export default class ApiStore implements IApiStore {
 
     request<SuccessT, ErrorT = any, ReqT = {}>(params: RequestParams<ReqT>): Promise<ApiResponse<SuccessT, ErrorT>> {
         // TODO: Напишите здесь код, который с помощью fetch будет делать запрос
-        let url:string = this.baseUrl;
-        let options:Object = {};
+        let url: string = this.baseUrl;
+        let options: Object = {};
 
-        if (params.method == 'GET'){
+        if (params.method == 'GET') {
             url += params.endpoint + '?' + qs.stringify(params.data);
-            
+
             options = {
                 method: params.method,
                 headers: params.headers
             }
         }
-        else if (params.method == 'POST'){
+        else if (params.method == 'POST') {
             options = {
                 method: params.method,
                 headers: params.headers,
@@ -31,17 +32,17 @@ export default class ApiStore implements IApiStore {
             };
         }
         //console.log(options);
-        
+
         return fetch(url, options)
-            .then((response) => { 
+            .then((response) => {
                 //console.log(response);
-                if (!response.ok){
+                if (!response.ok) {
                     return {
                         success: false,
                         data: response.statusText,
                         status: StatusHTTP.ERROR_BAD_REQUEST
                     }
-                }                      
+                }
                 return response.json();
             })
             .then((data) => {

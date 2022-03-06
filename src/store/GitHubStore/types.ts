@@ -15,7 +15,21 @@ export type GetOrganizationReposListParams = {
         direction?: string;
         per_page?: number;
         page?: number
-    }    
+    }
+}
+
+export type GetBranchesReposListParams = {
+    owner: string,
+    repo: string,
+    query?: {
+        protected?: boolean
+        per_page?: number
+        page?: number
+    }
+}
+
+export type GetReposByIdParams = {
+    id: number
 }
 
 export type ApiResp<RepoItem> = {
@@ -26,12 +40,33 @@ export type ApiResp<RepoItem> = {
 export type RepoItem = {
     id: number;
     name: string;
-    created_at: string;
+    updated_at: string;
     org_url: string;
+    org_name: string;
     stars_count: number;
     avatar_url: string;
 }
 
+export type BranchItem = {
+    id: number,
+    name: string,
+    url: string
+}
+
+export type RepoFullItem = {
+    id: number;
+    name: string;
+    updated_at: string;
+    org_url: string;
+    org_name: string;
+    stars_count: number;
+    avatar_url: string;
+    description?: string;
+}
+
+
+
 export interface IGitHubStore {
     getOrganizationReposList(params: GetOrganizationReposListParams): Promise<ApiResp<RepoItem[]>>;
+    getBranchesReposList(params: GetBranchesReposListParams): Promise<ApiResp<BranchItem[]>>;
 }
