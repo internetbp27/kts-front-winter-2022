@@ -1,0 +1,19 @@
+.item__avatar {
+    width: 80px;
+    height: 80px;
+    background: #FF5555;
+    border-radius: 50%;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 80px;
+    text-align: center;
+    color: #FFF;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    overflow: hidden;
+}
+    .item__avatar > img{
+        width: 100%;
+        min-height: 100%;
+        vertical-align: top;
+    }
